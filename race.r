@@ -21,6 +21,10 @@ data.cc <- data.m[cc,]
 data.sum <- data.cc %>% group_by(Respondent.Race, Group) %>% summarize(Guess=median(Guess))
 data.all <- rbind(data.sum, actual.df)
 
+
+data.cc %>% group_by(Group) %>% summarize(Guess=median(Guess))
+
+
 p <- ggplot(subset(data.all, Respondent.Race!="Other"), aes(x=Group, y=Guess, color=Respondent.Race, shape=Respondent.Race))
 
 jit <- position_jitter(width=0.1, height=0)
@@ -33,3 +37,17 @@ credit("Data: General Social Survey 2000 for respondents, US Census 2000 for act
 dev.off()
 
 ggsave("figures/gss-group-pctby-race.png", p1, width = 7, height = 4, dpi = 300)
+
+
+
+pdf(file="figures/gss-group-pctby-race-box.pdf", height=5, width=7)
+p <- ggplot(subset(data.cc, Respondent.Race!="Other"), aes(x=Group, y=Guess, fill=Respondent.Race))
+
+p1 <- p + geom_boxplot(outlier.shape = NA) +
+        coord_flip() + theme(legend.position="top") +
+            labs("Race of Respondent", fill="Race of Respondent", x="", y="Guess (Percent)\n") + scale_fill_manual(values=c(my.colors("bly")[1:2], "black")) + ggtitle("What Percentage of the US Population is ...?")
+print(p1)
+credit("Data: General Social Survey 2000 for respondents, US Census 2000 for actual values.")
+dev.off()
+
+ggsave("figures/gss-group-pctby-race-box.png", p1, width = 7, height = 4, dpi = 300)
