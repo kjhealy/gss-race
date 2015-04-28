@@ -24,7 +24,12 @@ data.all <- rbind(data.sum, actual.df)
 p <- ggplot(subset(data.all, Respondent.Race!="Other"), aes(x=Group, y=Guess, color=Respondent.Race, shape=Respondent.Race))
 
 jit <- position_jitter(width=0.1, height=0)
-p + geom_jitter(size=4, position=jit) +
+pdf(file="figures/gss-group-pctby-race.pdf", height=4, width=7)
+p1 <- p + geom_jitter(size=4, position=jit) +
         coord_flip() + theme(legend.position="top") +
             labs(color="Race of Respondent", shape="Race of Respondent", x="", y="Median Guess (Percent)\n") + scale_color_manual(values=c(my.colors("bly")[1:2], "black")) + ggtitle("What Percentage of the US Population is ...?")
+print(p1)
 credit("Data: General Social Survey 2000 for respondents, US Census 2000 for actual values.")
+dev.off()
+
+ggsave("figures/gss-group-pctby-race.png", p1, width = 7, height = 4, dpi = 300)
